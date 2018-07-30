@@ -54,7 +54,14 @@ public class TaskService {
      */
     public TaskDTO save(TaskDTO taskDTO) {
    
-    	return taskDTO;
+    	log.debug("Request to save Task : {}", taskDTO);
+    	Task task = taskMapper.toEntity(taskDTO);
+    	Priority priority = priorityRepository.findByName(taskDTO.getPriority());
+    	task.setPriorityId(priority.getId());
+    	task = taskRepository.save(task);
+    	TaskDTO taskDTOToReturn = taskMapper.toDto(task);
+    	taskDTOToReturn.setPriority(priority.getName());
+    	return taskDTOToReturn;
     }
 
     /**
